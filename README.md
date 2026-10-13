@@ -67,6 +67,53 @@ cp .env.example .env
 # .env に実際の値を設定（このファイルはgit管理対象外）
 ```
 
+## Docker + FastAPI アプリの起動
+
+開発用APIサーバーをDocker上で起動します（`127.0.0.1`のみに公開、ホストからは外部アクセス不可）。
+
+### ビルド
+
+```bash
+docker compose build
+```
+
+Dockerfile(`docker/Dockerfile`)の手順に従い、依存関係とアプリコードを含むイメージを作成します。
+
+### 起動
+
+```bash
+docker compose up
+```
+
+バックグラウンドで起動する場合は `docker compose up -d` を使用します。起動後、以下で動作確認できます。
+
+```bash
+curl http://127.0.0.1:8000/health
+# => {"status":"ok"}
+
+curl http://127.0.0.1:8000/
+# => {"name":"bedrock-rag-engineering","version":"0.1.0"}
+```
+
+### 停止
+
+```bash
+docker compose down
+```
+
+コンテナを停止・削除します（ビルド済みイメージは残ります）。
+
+### テスト
+
+コンテナを使わず、ローカルのPython仮想環境でテストを実行する場合:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## ライセンス
 
 未定（検討中）
