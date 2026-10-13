@@ -6,9 +6,9 @@ services:
     ports:
       - "127.0.0.1:8000:8000"
     environment:
-      - AWS_PROFILE=${AWS_PROFILE:-default}
       - AWS_REGION=${AWS_REGION:-ap-northeast-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID:-jp.anthropic.claude-haiku-5-5}
       - BEDROCK_MAX_TOKENS=${BEDROCK_MAX_TOKENS:-512}
-    volumes:
-      - ~/.aws:/home/appuser/.aws:ro

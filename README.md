@@ -120,14 +120,23 @@ pytest
 
 ### 事前準備
 
-1. AWS CLIでSSOログインしていること（認証情報の有効期限が切れたら `aws sso login --profile <プロファイル名>` で再ログイン）
-2. `.env`に以下を設定
-   - `AWS_PROFILE`: `~/.aws/config`に定義済みのプロファイル名
+1. AWS CLIでSSOログイン: `aws sso login --profile <プロファイル名>`
+2. 短期的なSTS認証情報を発行し、`.env`に貼り付ける
+
+   ```bash
+   aws configure export-credentials --profile <プロファイル名> --format env-no-export
+   ```
+
+   出力された`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`の3行を`.env`に貼り付けます。これらは数時間で失効するため、`UnauthorizedSSOTokenError`等が出たら`aws sso login`からやり直してください。
+
+3. `.env`に以下も設定
    - `AWS_REGION`: Bedrockを利用するリージョン（例: `ap-northeast-1`）
    - `BEDROCK_MODEL_ID`: 呼び出すモデルID、または推論プロファイルID（例: `jp.anthropic.claude-haiku-5-5`）
    - `BEDROCK_MAX_TOKENS`: 1回の応答で生成する最大トークン数（コスト上限の目安にもなる）
 
-認証情報は、ホストの`~/.aws`ディレクトリを読み取り専用でコンテナにマウントして共有します（`compose.yaml`参照）。長期アクセスキーをコードや環境変数に直接埋め込むことはしていません。
+認証情報は、発行のたびに期限が切れる**短期的なSTS認証情報を環境変数として**コンテナに渡します。ホストの`~/.aws`ディレクトリ自体はコンテナにマウントせず、長期アクセスキーも使いません。
+
+> **設計変更の経緯**: 当初は`~/.aws`を読み取り専用でマウントする方式を試しましたが、SSOトークンの自動更新時にboto3がキャッシュファイルへの書き込みを試み、読み取り専用の制約と衝突してエラーになることが判明したため、この方式に変更しました。
 
 ### 呼び出し例
 
