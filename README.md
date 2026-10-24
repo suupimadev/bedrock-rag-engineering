@@ -118,16 +118,22 @@ pytest
 
 ### 事前準備
 
-1. AWS CLIでSSOログイン: `aws sso login --profile <プロファイル名>`
-2. 短期的なSTS認証情報を発行し、`.env`に貼り付ける
+1. 短期的なSTS認証情報を発行し、`.env`に反映する
 
    ```bash
+   ./scripts/refresh-aws-creds.sh <プロファイル名>  # 省略時は personal
+   ```
+
+   `.env`内の`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`の3行だけを安全に入れ替えます（他の設定は変更しません）。SSOセッションが切れている場合は自動で`aws sso login`を挟んでから再試行します。これらの認証情報は数時間で失効するため、`UnauthorizedSSOTokenError`等が出たら再度このスクリプトを実行してください。
+
+   手動でやる場合は以下と同じ内容です。
+
+   ```bash
+   aws sso login --profile <プロファイル名>
    aws configure export-credentials --profile <プロファイル名> --format env-no-export
    ```
 
-   出力された`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`の3行を`.env`に貼り付けます。これらは数時間で失効するため、`UnauthorizedSSOTokenError`等が出たら`aws sso login`からやり直してください。
-
-3. `.env`に以下も設定
+2. `.env`に以下も設定
    - `AWS_REGION`: Bedrockを利用するリージョン（例: `ap-northeast-1`）
    - `BEDROCK_MODEL_ID`: 呼び出すモデルID、または推論プロファイルID（例: `jp.anthropic.claude-haiku-5-5`）
    - `BEDROCK_MAX_TOKENS`: 1回の応答で生成する最大トークン数（コスト上限の目安にもなる）

@@ -71,7 +71,7 @@ Amazon Bedrock (ap-northeast-1)
 - 本メモ（`docs/article-notes/step4.md`）
 - `.env`・AWS認証情報は引き続き非公開（ルートの`.gitignore`で除外済み、本STEPでの変更なし）
 
-## L300記事へ発展できる検証テーマ
+## 今後の検証テーマ
 
 - React版とVue(Nuxt)版、同一要件を実装した際の開発体験・コード量・型安全性の比較
 - Nuxtのディレクトリベース自動インポート（components/composables）が可読性・保守性に与える影響の検証
