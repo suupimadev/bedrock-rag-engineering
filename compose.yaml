@@ -12,3 +12,14 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID:-jp.anthropic.claude-haiku-5-5}
       - BEDROCK_MAX_TOKENS=${BEDROCK_MAX_TOKENS:-512}
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:5173:5173"
+    environment:
+      - API_PROXY_TARGET=http://api:8000
+    depends_on:
+      - api

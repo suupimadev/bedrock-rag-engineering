@@ -8,7 +8,6 @@ Amazon Bedrock・Docker・Terraformを学びながら、生成AI/RAG（Retrieval
 - RAGシステムの設計・実装・評価を通じた理解の深化
 - Terraformによるインフラのコード化（IaC）とDockerによる再現可能な実行環境の構築
 - 学んだ内容を技術記事とコードとしてGitHubで公開し、第三者が再現できる形で共有
-- 将来的に Japan AWS Top Engineers（AI/ML Data Engineer）を目指すための実績作り
 
 ## 使用予定技術
 
@@ -39,7 +38,6 @@ Amazon Bedrock・Docker・Terraformを学びながら、生成AI/RAG（Retrieval
    - 評価結果の記録・比較（results/配下）
 6. **発信フェーズ**
    - 技術記事の執筆・公開（docs/配下に下書きを管理）
-   - Japan AWS Top Engineers応募に向けた実績整理
 
 ## ディレクトリ構造
 
@@ -172,6 +170,48 @@ aws bedrock list-inference-profiles --profile <プロファイル名> --region a
   ]
 }
 ```
+
+## フロントエンド (Vue + Nuxt + TypeScript)
+
+`frontend/`に、ブラウザからBedrockとチャットできる画面があります（Nuxt 4のSPAモード + Ant Design Vueで構築）。
+
+### 起動
+
+```bash
+docker compose up -d
+```
+
+`api`と`frontend`の両方が起動します。ブラウザで `http://127.0.0.1:5173` を開いてください。
+
+- フロントエンドはNuxtの開発サーバーをコンテナ内で実行しています（`npm run dev`）
+- 画面からのAPIリクエストは `/api/chat` → Nitroのdevプロキシ機能 → コンテナ間通信（`http://api:8000/chat`）という経路でFastAPIに届きます
+- ブラウザがBedrockやAWS認証情報に直接触れることはありません（`frontend`コンテナにAWS関連の環境変数は一切渡していません）
+
+### コード変更時の注意
+
+volumeによるホットリロードは設定していないため、`frontend/app`配下を変更した場合は再ビルドが必要です。
+
+```bash
+docker compose up -d --build frontend
+```
+
+### 会話履歴の扱いについて（重要な制約）
+
+画面には過去のやり取りが**表示**されますが、これは画面上の見た目だけです。`POST /chat`は単発質問のみに対応しているため、**Bedrockへは常に最新の1メッセージのみを送信し、過去の会話履歴は送信しません**。複数ターンにまたがる文脈を踏まえた回答は、現時点ではできません。
+
+### フロントエンドの開発・テスト
+
+```bash
+cd frontend
+npm install
+npm run typecheck  # TypeScriptの型チェック (nuxt typecheck)
+npm run build       # 本番ビルド
+npm test            # vitestによるAPI連携のモックテスト
+```
+
+### 既知の課題
+
+`npm audit`で、Nuxtの開発用HTTPSリスナー機能（`listhen`）が依存する`node-forge`に高深刻度の脆弱性が報告されています。修正にはNuxtの破壊的バージョンアップが必要なため、現時点では未対応です。本アプリはローカル限定・HTTP通信のみのため実害は低いと判断していますが、将来的にNuxtのメジャーバージョンアップ時に解消される見込みです。
 
 ## ライセンス
 
