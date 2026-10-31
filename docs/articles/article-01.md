@@ -10,7 +10,7 @@ https://github.com/suupimadev/bedrock-rag-engineering
 
 今の時点ではAWS上に何かインフラを構築しているわけではなく（Terraformのリソースはまだ1つも作っていません）、ローカルのDocker環境から、Amazon Bedrockというマネージドサービス1つだけを呼びに行く、というシンプルな構成です。
 
-![構成図](../diagrams/bedrock-rag-architecture.svg)
+![構成図](../diagrams/bedrock-rag-architecture.png)
 
 ポイントは、ブラウザが触れるのは`frontend`コンテナだけで、AWSの認証情報には一切アクセスできないようにしてあることです。`frontend`にはAWS関連の環境変数を1つも渡していませんし、使っている認証情報もIAMユーザーの長期アクセスキーではなく、IAM Identity Center（SSO）から発行した一時的なSTS認証情報です。
 
@@ -82,7 +82,9 @@ except ClientError as exc:
     raise BedrockInvocationError(..., status_code=502) from exc
 ```
 
-boto3の`ClientError`をエラーコードごとにHTTPステータスへ変換しています。`converse_with_bedrock`を独立した関数にして、FastAPI側は`Depends(get_bedrock_call)`で呼び出すようにしたので、pytestでは実際にAWSを叩かずにモックへ差し替えてテストできます（`tests/test_main.py`の`test_chat_bedrock_error_is_translated_to_http_error`など）。
+boto3の`ClientError`をエラーコードごとにHTTPステータスへ変換しています。
+
+`converse_with_bedrock`は独立した関数にして、FastAPI側からは`Depends(get_bedrock_call)`で呼び出すようにしました。こうしておくと、pytestでは実際にAWSを叩かずにモックへ差し替えてテストできます（`tests/test_main.py`の`test_chat_bedrock_error_is_translated_to_http_error`など）。
 
 ### 認証情報の渡し方で一度やり直した話
 
@@ -91,6 +93,8 @@ boto3の`ClientError`をエラーコードごとにHTTPステータスへ変換�
 ```
 OSError: [Errno 30] Read-only file system: '/home/appuser/.aws/sso/cache/....json'
 ```
+
+![認証情報の渡し方: Before/After](../diagrams/credential-before-after.png)
 
 原因を追うと、SSOトークンの期限が近づくとboto3が勝手にリフレッシュしようとして、新しいトークンをキャッシュファイルに書き込もうとするのですが、それが読み取り専用マウントとぶつかっていました。セキュリティを意識して「読み取り専用にする」という判断自体は間違っていなかったのですが、別の仕組み（SSOトークンの自動更新）とまさかここで衝突するとは思っていませんでした。
 
@@ -132,7 +136,13 @@ nitro: {
 
 ## セキュリティ面で気をつけたこと
 
-長期のアクセスキーは一切使わず、IAM Identity Center（SSO）から出した一時的なSTS認証情報だけで動かしています。コンテナも`api`・`frontend`どちらも`Dockerfile`内で専用の非rootユーザーを作って実行し、ポートも`127.0.0.1`限定で公開しているので、同じネットワーク上の他の端末からは触れません。`frontend`コンテナにはAWS関連の環境変数を一切渡していないので、ブラウザから直接Bedrockを呼び出す経路はそもそも存在しません。
+**長期アクセスキーは使わない**: IAM Identity Center（SSO）から出した一時的なSTS認証情報だけで動かしています。
+
+**コンテナは非root実行**: `api`・`frontend`どちらも`Dockerfile`内で専用の非rootユーザーを作って実行しています。
+
+**公開ポートは127.0.0.1限定**: 同じネットワーク上の他の端末からは触れません。
+
+**フロントエンドにAWS認証情報を渡さない**: `frontend`コンテナにはAWS関連の環境変数を一切渡していないので、ブラウザから直接Bedrockを呼び出す経路はそもそも存在しません。
 
 今検証に使っているSSOプロファイルはAdministratorAccess相当の強い権限を持っていますが、これは学習用だからで、本番相当で使うなら`bedrock:InvokeModel`を特定のモデル・推論プロファイルのARNに絞ったポリシーにすべきだとREADMEにも書いています。
 
@@ -140,7 +150,9 @@ nitro: {
 
 ## やってみて分かったこと、ハマったこと
 
-一番の学びは、**「IAM権限」と「Bedrockのモデルアクセス」は別物**だということです。`personal`プロファイルはAdministratorAccess相当なのに、`jp.anthropic.claude-haiku-5-5`を呼んだら普通に失敗しました。
+### 「IAM権限」と「Bedrockのモデルアクセス」は別物
+
+一番の学びはこれでした。`personal`プロファイルはAdministratorAccess相当なのに、`jp.anthropic.claude-haiku-5-5`を呼んだら普通に失敗しました。
 
 ```
 AccessDeniedException: anthropic.claude-haiku-5-5 is not available for this account.
@@ -148,11 +160,17 @@ AccessDeniedException: anthropic.claude-haiku-5-5 is not available for this acco
 
 調べてみると、AWSはBedrockコンソールの「Model access」画面をもう廃止していて、ほとんどのサーバーレスモデルは初回呼び出し時に自動で有効化される一方、Anthropicのモデルだけは別途「利用目的（use case）」の申請が必要になっていました。こういうところは知識が古くなりがちなので、実際のコンソールを見て都度確認するしかないなと思いました。
 
-`~/.aws`の読み取り専用マウントとSSOトークン自動更新の衝突は前述のとおりです。
+### `~/.aws`マウントとSSOトークン自動更新の衝突
 
-地味にハマったのが`vue-tsc`とTypeScript 7系の非互換です。`nuxt typecheck`を実行すると`ERR_PACKAGE_PATH_NOT_EXPORTED`というエラーが出て、調べたら`vue-tsc@3.3.13`がTypeScript 7系で変わった`exports`の構造にまだ対応していないことが原因でした。`package.json`の`overrides`で`typescript`を5系に固定して解決しています。
+前述のとおりです。
 
-最後にちょっと情けない話も書いておくと、認証情報を更新している最中に`.env`の中身を`BEDROCK_MODEL_ID`ごと消してしまう事故を起こしました。`.env`は`.gitignore`対象なのでGitで元に戻せず、`.env.example`を見ながら手で構造を復元する羽目になりました。gitignoreしているファイルほど、うっかり壊したときに戻せないんだな、というのを身をもって学びました。
+### `vue-tsc`とTypeScript 7系の非互換
+
+地味にハマりました。`nuxt typecheck`を実行すると`ERR_PACKAGE_PATH_NOT_EXPORTED`というエラーが出て、調べたら`vue-tsc@3.3.13`がTypeScript 7系で変わった`exports`の構造にまだ対応していないことが原因でした。`package.json`の`overrides`で`typescript`を5系に固定して解決しています。
+
+### `.env`を事故で壊した話
+
+ちょっと情けない話ですが、認証情報を更新している最中に`.env`の中身を`BEDROCK_MODEL_ID`ごと消してしまう事故を起こしました。`.env`は`.gitignore`対象なのでGitで元に戻せず、`.env.example`を見ながら手で構造を復元する羽目になりました。gitignoreしているファイルほど、うっかり壊したときに戻せないんだな、というのを身をもって学びました。
 
 ## おわりに
 
