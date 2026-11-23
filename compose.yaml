@@ -10,7 +10,7 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
-      - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID:-jp.anthropic.claude-haiku-5-5}
+      - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID:-amazon.nova-lite-v1:0}
       - BEDROCK_MAX_TOKENS=${BEDROCK_MAX_TOKENS:-512}
 
   frontend:

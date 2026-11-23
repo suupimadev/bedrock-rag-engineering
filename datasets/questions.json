@@ -1,0 +1,114 @@
+[
+  {
+    "id": "obj-01",
+    "category": "objective",
+    "question": "1から10までの整数をすべて足すといくつですか？数字のみで答えてください。",
+    "expected_keywords": ["55"]
+  },
+  {
+    "id": "obj-02",
+    "category": "objective",
+    "question": "日本の首都はどこですか？地名のみ一言で答えてください。",
+    "expected_keywords": ["東京"]
+  },
+  {
+    "id": "obj-03",
+    "category": "objective",
+    "question": "英語で「ありがとう」は何と言いますか？",
+    "expected_keywords": ["thank you", "thanks"]
+  },
+  {
+    "id": "obj-04",
+    "category": "objective",
+    "question": "水の化学式は何ですか？記号のみで答えてください。",
+    "expected_keywords": ["H2O", "H₂O"]
+  },
+  {
+    "id": "obj-05",
+    "category": "objective",
+    "question": "1ドルは何セントですか？数字のみで答えてください。",
+    "expected_keywords": ["100"]
+  },
+  {
+    "id": "obj-06",
+    "category": "objective",
+    "question": "Pythonでリストの要素数を取得する組み込み関数の名前は何ですか？",
+    "expected_keywords": ["len"]
+  },
+  {
+    "id": "obj-07",
+    "category": "objective",
+    "question": "1時間は何分ですか？数字のみで答えてください。",
+    "expected_keywords": ["60"]
+  },
+  {
+    "id": "obj-08",
+    "category": "objective",
+    "question": "太陽系で最も大きい惑星は何ですか？",
+    "expected_keywords": ["木星", "Jupiter"]
+  },
+  {
+    "id": "obj-09",
+    "category": "objective",
+    "question": "三角形の内角の和は何度ですか？数字のみで答えてください。",
+    "expected_keywords": ["180"]
+  },
+  {
+    "id": "obj-10",
+    "category": "objective",
+    "question": "2の10乗はいくつですか？数字のみで答えてください。",
+    "expected_keywords": ["1024"]
+  },
+  {
+    "id": "obj-11",
+    "category": "objective",
+    "question": "HTTPステータスコード200は何を意味しますか？日本語で一言(例: 成功)で答えてください。",
+    "expected_keywords": ["成功", "OK"]
+  },
+  {
+    "id": "obj-12",
+    "category": "objective",
+    "question": "1キロバイトは何バイトですか？数字のみで答えてください。",
+    "expected_keywords": ["1024", "1000"]
+  },
+  {
+    "id": "sub-01",
+    "category": "rubric",
+    "question": "クラウドコンピューティングのメリットを3つ、それぞれ理由と共に説明してください。"
+  },
+  {
+    "id": "sub-02",
+    "category": "rubric",
+    "question": "初心者にAWSのIAMの役割をわかりやすく説明してください。"
+  },
+  {
+    "id": "sub-03",
+    "category": "rubric",
+    "question": "RAG(Retrieval-Augmented Generation)とは何か、具体例を交えて説明してください。"
+  },
+  {
+    "id": "sub-04",
+    "category": "rubric",
+    "question": "良いコードレビューのポイントを5つ挙げてください。"
+  },
+  {
+    "id": "sub-05",
+    "category": "rubric",
+    "question": "量子コンピュータの基本的な仕組みを高校生にもわかるように説明してください。"
+  },
+  {
+    "id": "sub-06",
+    "category": "rubric",
+    "question": "マイクロサービスアーキテクチャのメリットとデメリットを説明してください。"
+  },
+  {
+    "id": "sub-07",
+    "category": "rubric",
+    "question": "LLM(大規模言語モデル)のTemperatureパラメータの役割を説明してください。"
+  },
+  {
+    "id": "sub-08",
+    "category": "rubric",
+    "question": "新人エンジニアに伝えたい、効果的なデバッグの進め方を教えてください。"
+  }
+]

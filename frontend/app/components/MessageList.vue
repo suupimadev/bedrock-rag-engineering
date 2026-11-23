@@ -4,6 +4,13 @@ import type { Message } from '../types'
 defineProps<{
   messages: Message[]
 }>()
+
+function formatCost(cost: number | null | undefined): string {
+  if (cost === null || cost === undefined) {
+    return '算出不可'
+  }
+  return `$${cost.toFixed(6)}`
+}
 </script>
 
 <template>
@@ -28,6 +35,13 @@ defineProps<{
               class="message-tokens"
             >
               入力: {{ item.inputTokens }} tokens / 出力: {{ item.outputTokens }} tokens
+            </a-typography-text>
+            <a-typography-text
+              v-if="item.role === 'assistant' && item.totalDurationMs !== undefined"
+              type="secondary"
+              class="message-tokens"
+            >
+              応答時間: {{ item.totalDurationMs.toFixed(0) }}ms (Bedrock呼び出し: {{ item.bedrockDurationMs?.toFixed(0) }}ms) / 推定コスト: {{ formatCost(item.estimatedCostUsd) }}
             </a-typography-text>
           </template>
         </a-list-item-meta>

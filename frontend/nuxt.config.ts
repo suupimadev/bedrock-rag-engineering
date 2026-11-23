@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     devProxy: {
       '/api/chat': { target: `${apiTarget}/chat`, changeOrigin: true },
       '/api/health': { target: `${apiTarget}/health`, changeOrigin: true },
+      '/api/models': { target: `${apiTarget}/models`, changeOrigin: true },
     },
   },
 })

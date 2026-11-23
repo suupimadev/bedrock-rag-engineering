@@ -63,5 +63,15 @@ terraform.rc
 # ==== Data / results (large or sensitive, keep structure via .gitkeep) ====
 datasets/*
 !datasets/.gitkeep
+# 評価ハーネスの再現に必要な質問セットと採点基準(秘密情報なし)
+!datasets/questions.json
+!datasets/rubric.md
 results/*
 !results/.gitkeep
+# 記事(docs/articles/article-02.md)の出典として公開する評価結果のみ
+!results/eval_20261103-101202_records.csv
+!results/eval_20261103-101202_summary.json
+!results/eval_20261103-101202_rescored_records.csv
+!results/eval_20261103-101202_rescored_summary.json
+!results/eval_20261114-143554_records.csv
+!results/eval_20261114-143554_summary.json

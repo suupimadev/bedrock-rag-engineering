@@ -47,8 +47,8 @@ bedrock-rag-engineering/
 ├── docker/                # Dockerfile、docker-compose等
 ├── terraform/             # AWSインフラのTerraformコード
 ├── rag/                   # RAGパイプライン（取り込み・検索・生成ロジック）
-├── evaluation/            # RAG評価用スクリプト・指標
-├── datasets/              # 学習・評価用データセット
+├── evaluation/            # 複数LLMモデルの性能・品質比較用評価ハーネス
+├── datasets/              # 評価用の質問セット(datasets/questions.json)とルーブリック採点基準
 ├── docs/                  # 技術記事の下書き・設計ドキュメント
 ├── results/               # 評価結果・実験ログ
 ├── tests/                 # テストコード
@@ -112,6 +112,14 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
+### Dockerのスモークテスト
+
+Docker Composeでの起動確認・API疎通確認・フロントエンド画面動作確認、および「AWS認証情報がフロントエンドに一切渡っていないこと」を自動確認します。実際のBedrock呼び出しは行わないため課金は発生しません。
+
+```bash
+./scripts/docker-smoke-test.sh
+```
+
 ## Amazon Bedrock連携 (POST /chat)
 
 `/chat`エンドポイントは、受け取ったメッセージをAmazon Bedrock Converse APIに渡し、AIの回答を返します。
@@ -135,7 +143,7 @@ pytest
 
 2. `.env`に以下も設定
    - `AWS_REGION`: Bedrockを利用するリージョン（例: `ap-northeast-1`）
-   - `BEDROCK_MODEL_ID`: 呼び出すモデルID、または推論プロファイルID（例: `jp.anthropic.claude-haiku-5-5`）
+   - `BEDROCK_MODEL_ID`: 呼び出すモデルID、または推論プロファイルID（例: `amazon.nova-lite-v1:0`）
    - `BEDROCK_MAX_TOKENS`: 1回の応答で生成する最大トークン数（コスト上限の目安にもなる）
 
 認証情報は、発行のたびに期限が切れる**短期的なSTS認証情報を環境変数として**コンテナに渡します。ホストの`~/.aws`ディレクトリ自体はコンテナにマウントせず、長期アクセスキーも使いません。
@@ -148,7 +156,7 @@ pytest
 curl -X POST http://127.0.0.1:8000/chat \
   -H "Content-Type: application/json" \
   -d '{"message": "こんにちは"}'
-# => {"reply": "...", "model_id": "jp.anthropic.claude-haiku-5-5", "input_tokens": ..., "output_tokens": ...}
+# => {"reply": "...", "model_id": "amazon.nova-lite-v1:0", "input_tokens": ..., "output_tokens": ...}
 ```
 
 ### 利用可能なモデルの確認
@@ -171,10 +179,61 @@ aws bedrock list-inference-profiles --profile <プロファイル名> --region a
     {
       "Effect": "Allow",
       "Action": "bedrock:InvokeModel",
-      "Resource": "arn:aws:bedrock:ap-northeast-1:<account-id>:inference-profile/jp.anthropic.claude-haiku-5-5"
+      "Resource": "arn:aws:bedrock:ap-northeast-1:<account-id>:inference-profile/apac.amazon.nova-pro-v1:0"
     }
   ]
 }
+```
+
+## LLM評価ハーネス (複数モデルの性能・品質比較)
+
+`evaluation/runner.py`は、`datasets/questions.json`に用意した質問を複数のBedrockモデルへ送り、応答時間・推定コスト・正答率(客観問題)を自動計測するスクリプトです。
+
+### 無料のモック実行(動作確認・開発用)
+
+`--live`を付けなければ、実際にBedrockへは接続せず、ダミー応答で動作確認ができます。
+
+```bash
+source .venv/bin/activate
+python -m evaluation.runner --repeats 1
+```
+
+### 本番実行(実際にBedrockへ課金リクエストを送る)
+
+`--live`を付けた場合のみ、実際のAPI呼び出しが行われます。事前に呼び出し回数の見積もりが表示され、`yes`と入力しないと実行されません。
+
+```bash
+# 例: Nova Liteのみ、先頭3問だけ試す小規模トライアル
+python -m evaluation.runner --model-id amazon.nova-lite-v1:0 --limit 3 --repeats 1 --live
+
+# 例: 客観問題12問のみ、全モデルで実行
+python -m evaluation.runner --category objective --repeats 1 --live
+```
+
+主なオプション(詳細は `python -m evaluation.runner --help`):
+
+| オプション | 役割 |
+|---|---|
+| `--model-id` | 指定した1モデルのみ実行(省略時は許可された全モデル) |
+| `--category objective\|rubric` | 客観問題/ルーブリック問題のどちらかだけ実行 |
+| `--limit N` | 対象質問の先頭N件だけ使う |
+| `--repeats N` | 同一質問の繰り返し回数(最大3) |
+| `--max-tokens N` | 1回の応答の最大トークン数(上限1024) |
+| `--temperature X` | 推論の温度パラメータ(デフォルト0.2) |
+| `--rescore <CSV>` | 保存済みの回答を現在の採点ロジックで再採点(Bedrockは呼ばない、課金なし) |
+
+実行結果は `results/eval_<タイムスタンプ>_records.csv`(1回答ごとの詳細)と`_summary.json`(モデルごとの集計)として保存されます。
+
+### ルーブリック問題(主観評価)の採点
+
+客観問題以外の「正解が1つに決まらない」質問は自動採点されません。`datasets/questions.json`内の`rubric`カテゴリの質問に対し、`datasets/rubric.md`の基準(正確性・網羅性・わかりやすさ、各5段階)で人手採点します。
+
+```bash
+# 採点しやすいようにMarkdownシートを生成
+python -m evaluation.scoring_worksheet results/eval_<タイムスタンプ>_records.csv
+
+# シートの「___」部分に点数を記入し、記入済みCSVを渡すとモデルごとの平均を集計
+python -m evaluation.runner --aggregate-rubric results/eval_<タイムスタンプ>_records.csv
 ```
 
 ## フロントエンド (Vue + Nuxt + TypeScript)
@@ -212,12 +271,14 @@ cd frontend
 npm install
 npm run typecheck  # TypeScriptの型チェック (nuxt typecheck)
 npm run build       # 本番ビルド
-npm test            # vitestによるAPI連携のモックテスト
+npm test            # vitestによるAPI連携・モデル選択・エラー表示のテスト
 ```
 
 ### 既知の課題
 
 `npm audit`で、Nuxtの開発用HTTPSリスナー機能（`listhen`）が依存する`node-forge`に高深刻度の脆弱性が報告されています。修正にはNuxtの破壊的バージョンアップが必要なため、現時点では未対応です。本アプリはローカル限定・HTTP通信のみのため実害は低いと判断していますが、将来的にNuxtのメジャーバージョンアップ時に解消される見込みです。
+
+また、テスト用に追加した`@vue/test-utils`が依存する`js-beautify`経由で`glob`/`minimatch`の中程度の脆弱性が1系統報告されています。`@vue/test-utils`は`devDependencies`であり本番ビルド(`.output/`)には含まれないため、本番環境への実害はありません。
 
 ## ライセンス
 

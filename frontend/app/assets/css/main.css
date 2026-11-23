@@ -17,6 +17,10 @@ body {
   margin-bottom: 1rem;
 }
 
+.model-selector {
+  margin-bottom: 1rem;
+}
+
 .message-list {
   min-height: 120px;
   margin-bottom: 1rem;
