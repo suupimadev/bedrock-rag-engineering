@@ -1,0 +1,94 @@
+model_id,question_id,category,repeat_index,temperature,reply,input_tokens,output_tokens,bedrock_duration_ms,estimated_cost_usd,is_correct,error,rubric_accuracy,rubric_completeness,rubric_clarity
+amazon.nova-lite-v1:0,obj-01,objective,0,0.2,55,25,4,371.56804199912585,2.46e-06,True,,,,
+amazon.nova-lite-v1:0,obj-02,objective,0,0.2,東京,17,3,332.44025000021793,1.74e-06,True,,,,
+amazon.nova-lite-v1:0,obj-03,objective,0,0.2,「ありがとう」は英語で「Thank you」と言います。フォーマルな場では「Thanks」と省略形を使うこともよくあります。また、より感謝の気持ちを強調したい場合は「Thank you very much」と言うこともあるでしょう。,13,57,485.2631249814294,1.446e-05,True,,,,
+amazon.nova-lite-v1:0,obj-04,objective,0,0.2,H₂O,17,4,247.7045410196297,1.98e-06,True,,,,
+amazon.nova-lite-v1:0,obj-05,objective,0,0.2,100,15,5,232.61745800846256,2.1e-06,True,,,,
+amazon.nova-lite-v1:0,obj-06,objective,0,0.2,"Pythonでリストの要素数を取得する組み込み関数は `len()` です。この関数は、リストだけでなく、文字列、タプル、辞書などのシーケンス型やコレクション型に対しても使用できます。
+
+以下に例を示します：
+
+```python
+# リストの作成
+my_list = [1, 2, 3, 4, 5]
+
+# リストの要素数を取得
+element_count = len(my_list)
+
+print(f""リストの要素数: {element_count}"")
+```
+
+このコードを実行すると、出力は次のようになります：
+
+```
+リストの要素数: 5
+```
+
+このように、`len()` 関数を使用してリストの要素数を簡単に取得できます。",18,172,1088.9360830187798,4.236e-05,True,,,,
+amazon.nova-lite-v1:0,obj-07,objective,0,0.2,60分です。,15,7,299.6229169948492,2.58e-06,True,,,,
+amazon.nova-lite-v1:0,obj-08,objective,0,0.2,"太陽系で最も大きい惑星は木星です。木星は直径約14万2,984キロメートルと、他のすべての惑星よりもはるかに大きく、その質量は太陽系の他のすべての惑星の質量の合計の2.5倍以上に相当します。木星は、その巨大なサイズと強力な引力により、太陽系の「掃除屋」として機能し、小惑星や彗星などの天体が地球や他の内側の惑星に衝突するのを防ぐ役割を果たしています。木星はまた、その大気の特徴、特に巨大な赤斑として知られる巨大な嵐で有名です。この嵐は少なくとも400年前から存在しており、時速400キロメートル以上で吹き荒れています。",13,199,928.8428750005551,4.854e-05,True,,,,
+amazon.nova-lite-v1:0,obj-09,objective,0,0.2,180,21,5,275.1187499961816,2.46e-06,True,,,,
+amazon.nova-lite-v1:0,obj-10,objective,0,0.2,1024,19,6,240.25370899471454,2.58e-06,True,,,,
+amazon.nova-lite-v1:0,obj-11,objective,0,0.2,成功,29,3,247.28479201439768,2.46e-06,True,,,,
+amazon.nova-lite-v1:0,obj-12,objective,0,0.2,1024,17,6,355.60983399045654,2.46e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-01,objective,0,0.2,55,25,4,311.5167499927338,1.43e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-02,objective,0,0.2,東京,17,3,241.5117910131812,1.02e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-03,objective,0,0.2,"英語で「ありがとう」は「Thank you」と言います。他にもいくつかの表現がありますが、最も一般的なものは「Thank you」です。例えば：
+
+- Thank you very much!（とてもありがとう！）
+- Thanks a lot!（たくさんありがとう！）
+- Thank you so much!（とてもたくさんありがとう！）
+
+これらの表現は、状況に応じて使い分けることができます。",13,91,492.610290995799,1.319e-05,True,,,,
+apac.amazon.nova-micro-v1:0,obj-04,objective,0,0.2,水の化学式は \( \text{H}_2\text{O} \) です。,17,25,337.51754197874106,4.09e-06,False,,,,
+apac.amazon.nova-micro-v1:0,obj-05,objective,0,0.2,1ドルは100セントに相当します。数字のみで答えると、**100**です。,15,29,311.10583400004543,4.59e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-06,objective,0,0.2,"Pythonでリストの要素数を取得する組み込み関数は `len()` です。
+
+例えば、以下のように使用します：
+
+```python
+my_list = [1, 2, 3, 4, 5]
+length = len(my_list)
+print(length)  # 出力: 5
+```
+
+`len()` 関数は、与えられたリストの要素数を返します。他のデータ構造（例：タプル、辞書、セット）にも同様に適用できます。",18,118,548.355624981923,1.715e-05,True,,,,
+apac.amazon.nova-micro-v1:0,obj-07,objective,0,0.2,60分,15,5,353.3789580105804,1.22e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-08,objective,0,0.2,"太陽系で最も大きい惑星は木星（Jupiter）です。木星は巨大ガス惑星で、その直径は約142,984キロメートルで、これは地球の約11倍以上に相当します。また、木星の質量も非常に大きく、太陽系の惑星の中では最大です。木星は多くの衛星を持っており、その中でもガリレオ衛星（ガニメデ、イオ、エウロパ、カリスト）が特に有名です。",13,126,708.8392500008922,1.809e-05,True,,,,
+apac.amazon.nova-micro-v1:0,obj-09,objective,0,0.2,180度です。,21,8,419.25104201072827,1.85e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-10,objective,0,0.2,2の10乗は1024です。,19,14,277.76925000944175,2.62e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-11,objective,0,0.2,成功,29,3,211.20541699929163,1.44e-06,True,,,,
+apac.amazon.nova-micro-v1:0,obj-12,objective,0,0.2,"1キロバイトは1,000バイトです。",17,15,380.0040420028381,2.69e-06,False,,,,
+apac.amazon.nova-pro-v1:0,obj-01,objective,0,0.2,1から10までの整数をすべて足すと55です。,25,18,444.76908299839124,7.76e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-02,objective,0,0.2,東京,17,3,309.0339160116855,2.32e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-03,objective,0,0.2,英語で「ありがとう」は「Thank you」と言います。より親しみを込めて表現したい場合は「Thanks」や「Thanks a lot」もよく使われます。また、より丁寧な表現として「Thank you very much」もよく使われます。,13,62,613.0582920159213,0.0002088,True,,,,
+apac.amazon.nova-pro-v1:0,obj-04,objective,0,0.2,水の化学式は **H₂O** です。これは、水分子が2つの水素原子（H）と1つの酸素原子（O）で構成されていることを示しています。,17,48,607.3771250084974,0.0001672,True,,,,
+apac.amazon.nova-pro-v1:0,obj-05,objective,0,0.2,100,15,5,636.0156659793574,2.8e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-06,objective,0,0.2,"Pythonでリストの要素数を取得する組み込み関数は`len()`です。`len()`関数は、リスト、タプル、文字列など、さまざまなシーケンス型の要素数を返します。
+
+以下は`len()`関数を使用する簡単な例です：
+
+```python
+my_list = [1, 2, 3, 4, 5]
+print(len(my_list))  # 出力: 5
+```
+
+この例では、`my_list`の要素数は5なので、`len(my_list)`は5を返します。",18,136,867.6475830143318,0.0004496,True,,,,
+apac.amazon.nova-pro-v1:0,obj-07,objective,0,0.2,60,15,4,292.3523750214372,2.48e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-08,objective,0,0.2,"太陽系で最も大きい惑星は木星です。木星はガス惑星に分類され、その直径は約142,984キロメートルで、地球の約11倍の大きさがあります。質量は地球の約318倍で、太陽系内の他のすべての惑星の総質量よりも大きいです。木星は主に水素とヘリウムから構成されており、その大気中には美しい帯状の雲や有名な大赤斑（巨大な嵐）が見られます。",13,130,954.7418330039363,0.0004264,True,,,,
+apac.amazon.nova-pro-v1:0,obj-09,objective,0,0.2,180,21,5,289.17775000445545,3.28e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-10,objective,0,0.2,1024,19,6,326.3514169957489,3.44e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-11,objective,0,0.2,HTTPステータスコード200は「成功」を意味します。,29,17,540.178333001677,7.76e-05,True,,,,
+apac.amazon.nova-pro-v1:0,obj-12,objective,0,0.2,1024,17,6,501.35400000726804,3.28e-05,True,,,,
+jp.anthropic.claude-haiku-5-5,obj-01,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-02,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-03,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-04,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-05,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-06,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-07,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-08,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-09,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-10,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-11,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,
+jp.anthropic.claude-haiku-5-5,obj-12,objective,0,0.2,,0,0,0.0,,,Not authorized to invoke this Bedrock model,,,

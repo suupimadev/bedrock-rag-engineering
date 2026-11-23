@@ -1,0 +1,42 @@
+{
+  "amazon.nova-lite-v1:0": {
+    "total_calls": 12,
+    "error_count": 0,
+    "success_rate": 1.0,
+    "avg_duration_ms": 425.4385313349,
+    "p95_duration_ms": 1088.9360830187798,
+    "objective_question_count": 12,
+    "accuracy": 1.0,
+    "total_estimated_cost_usd": 0.00012618
+  },
+  "apac.amazon.nova-micro-v1:0": {
+    "total_calls": 12,
+    "error_count": 0,
+    "success_rate": 1.0,
+    "avg_duration_ms": 382.7554826663497,
+    "p95_duration_ms": 708.8392500008922,
+    "objective_question_count": 12,
+    "accuracy": 1.0,
+    "total_estimated_cost_usd": 6.938e-05
+  },
+  "apac.amazon.nova-pro-v1:0": {
+    "total_calls": 12,
+    "error_count": 0,
+    "success_rate": 1.0,
+    "avg_duration_ms": 531.8381144218923,
+    "p95_duration_ms": 954.7418330039363,
+    "objective_question_count": 12,
+    "accuracy": 1.0,
+    "total_estimated_cost_usd": 0.0015832
+  },
+  "jp.anthropic.claude-haiku-5-5": {
+    "total_calls": 12,
+    "error_count": 12,
+    "success_rate": 0.0,
+    "avg_duration_ms": null,
+    "p95_duration_ms": null,
+    "objective_question_count": 0,
+    "accuracy": null,
+    "total_estimated_cost_usd": null
+  }
+}
